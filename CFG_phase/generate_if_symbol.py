@@ -8,8 +8,6 @@ excel = copy(workbook)
 data = excel.get_sheet(0)
 rows = workbook.sheets()[0].nrows
 
-if_cluster = pd.read_csv('if_probability.csv')
-# original_if = pd.read_csv('if_with_cluster.csv')
 original_if = pd.read_csv('if_data.csv')
 
 original_if['symbol'] = ''
