@@ -1,6 +1,6 @@
 import os
+import argparse
 
-path ='../libxml2'
 
 def get_filelist(path):
 
@@ -16,7 +16,13 @@ def get_filelist(path):
 
 if __name__ =="__main__":
 
-    path = '../libxml2'
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--file", default=None)
+    args = parser.parse_args()
+
+    # path ='../libxml2'
+    path = args.file
+
     c_file_list = get_filelist(path)
 
     # print(len(c_file_list))
