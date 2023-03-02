@@ -354,6 +354,7 @@ bool AFLCoverage::runOnModule(Module &M) {
     std::ofstream bbtableIndex(OutDirectory + "/BBtableIndex.txt", std::ofstream::out );
     std::ofstream cgtable(OutDirectory + "/CGtable.txt", std::ofstream::out | std::ofstream::app);
     std::ofstream cgtableIndex(OutDirectory + "/CGtableIndex.txt", std::ofstream::out );
+    std::ofstream IfCallGraph(OutDirectory + "/If_Call.txt", std::ofstream::out | std::ofstream::app);
 
     /* Create dot-files directory */
     std::string dotfiles(OutDirectory + "/dot-files");
@@ -377,6 +378,7 @@ bool AFLCoverage::runOnModule(Module &M) {
       bool f_trace= true;
       
       bool is_target = false;
+      
       for (auto &BB : F) {
 
         std::string bb_name("");
@@ -408,8 +410,39 @@ bool AFLCoverage::runOnModule(Module &M) {
         }
 
         for (auto &I : BB) {
-
+	  
           getDebugLoc(&I, filename, line);
+          
+          
+          
+          // get if-call graph
+          if (isa<CallInst>(I)){
+          	auto *CI=dyn_cast<CallInst>(&I);
+          	Function *fun = CI->getCalledFunction();
+ 		//directed call
+ 		if (fun) {
+		  	std::string callee;
+		  	StringRef callFunction=fun->getName();
+		  	callee= callFunction.str();
+		  	for (auto it = pred_begin(&BB), et = pred_end(&BB); it != et; ++it){
+	  			BasicBlock* predecessor = *it;
+	  			for (auto &inst : *predecessor){
+	  				if (isa<BranchInst>(&inst)){
+	  					std::string brachFile;
+	  					unsigned branchLine;
+	  					getDebugLoc(&inst, brachFile, branchLine);
+	  					IfCallGraph <<funcName<< " "<< filename<<" "<< branchLine<< " -> " << callee <<" "<< line<< "\n";
+	  					
+	  				}
+	  			
+	  			}
+			}
+        	
+        	}
+          }
+          
+          
+          
           
           /* Don't worry about external libs */
           static const std::string Xlibs("/usr/");
