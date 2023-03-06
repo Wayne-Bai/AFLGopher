@@ -8381,13 +8381,17 @@ int main(int argc, char** argv) {
 
 
       //update
-      
       if ((queue_cycle+1)%3==0){
+      	   
       	   OKF("start updating now\n");
-
-      	   system(getenv("UPDATE_SH"));
-
-      	   OKF("update finished\n");
+      	   
+      	   pid_t fork_pid = fork();
+      	   if (fork_pid==0){
+      	   
+      	   	system(getenv("UPDATE_SH"));
+      	   	exit(0);
+      	   
+      	   }
       	   
       }
 
