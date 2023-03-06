@@ -4,6 +4,7 @@ import argparse
 import collections
 import functools
 import networkx as nx
+import os
 
 
 class memoize:
@@ -128,7 +129,7 @@ if __name__ == '__main__':
   if is_cg:
   	re_edge=r'([0-9a-zA-Z]+)\s->\s([0-9a-zA-Z]+)\s=\s([0-9.]+)'
   	re_node=r'(Node[0-9a-zA-Z]+) \[shape=record,label="{([a-zA-Z]+)}"\]'
-  	fcg_edge=open("/home/eval5/Documents/libxml2/temp/CG_edge","r")
+  	fcg_edge=open(os.environ.get('TMP_DIR')+"/CG_edge","r")
   	cg_edge_lines= fcg_edge.readlines()
   	
   	fcg=open(args.dot)
@@ -171,7 +172,7 @@ if __name__ == '__main__':
   if not is_cg:
   	
   	
-  	x1=xlrd.open_workbook("/home/eval5/Documents/libxml2/temp/weight.xls")
+  	x1=xlrd.open_workbook(os.environ.get('TMP_DIR')+"/weight.xls")
   	sheet1=x1.sheet_by_name("data")
   	
   	f=open(args.dot)
