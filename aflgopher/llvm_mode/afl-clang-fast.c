@@ -322,9 +322,9 @@ int main(int argc, char** argv) {
   if (isatty(2) && !getenv("AFL_QUIET")) {
 
 #ifdef USE_TRACE_PC
-    SAYF(cCYA "aflgo-compiler (yeah!) [tpcg] " cBRI VERSION  cRST "\n");
+    SAYF(cCYA "aflgopher-compiler [tpcg] " cBRI VERSION  cRST "\n");
 #else
-    SAYF(cCYA "aflgo-compiler (yeah!) " cBRI VERSION  cRST "\n");
+    SAYF(cCYA "aflgopher-compiler " cBRI VERSION  cRST "\n");
 #endif /* ^USE_TRACE_PC */
 
   }
