@@ -121,7 +121,6 @@ if __name__ == '__main__':
 
   ### modification start here s 
   import re
-  import xlrd
   
   node_match=r'(Node[0-9a-zA-Z]+) \[shape=record,label="{(.*):([0-9]+):}"\]'
   edge_match=r'(Node[0-9a-zA-Z]+)\s->\s(Node[0-9a-zA-Z]+);'
@@ -171,9 +170,8 @@ if __name__ == '__main__':
   
   if not is_cg:
   	
-  	
-  	x1=xlrd.open_workbook(os.environ.get('TMP_DIR')+"/weight.xls")
-  	sheet1=x1.sheet_by_name("data")
+  	f_weight =open(os.environ.get('TMP_DIR')+"/weight","r")
+  	lines_weight = f_weight.readlines()
   	
   	f=open(args.dot)
   	fout=open("log.out.findMe", "a")
@@ -199,12 +197,13 @@ if __name__ == '__main__':
   		node_number=match.group(1)
   		node_file=match.group(2)
   		node_BB=match.group(3)
-  		for index in range(1,sheet1.nrows):
-  			file_name=sheet1.cell_value(index, 0)
-  			cur_BB=sheet1.cell_value(index, 1)
-  			next_BB=sheet1.cell_value(index, 2)
-  			weight=sheet1.cell_value(index, 3)
-  			false_weight=sheet1.cell_value(index, 4)
+  		for line_weight in lines_weight:
+  			res = line_weight.split()
+  			file_name=res[0]
+  			cur_BB=res[1]
+  			next_BB=res[2]
+  			weight=float(res[3])
+  			false_weight=float(res[4])
   			
   			# matching
   			if (node_file==file_name and int(node_BB) ==int(cur_BB)):
