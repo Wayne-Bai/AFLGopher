@@ -378,6 +378,7 @@ bool AFLCoverage::runOnModule(Module &M) {
       bool f_trace= true;
       
       bool is_target = false;
+      bool insert_count = false;
       
       for (auto &BB : F) {
 
@@ -473,8 +474,11 @@ bool AFLCoverage::runOnModule(Module &M) {
                 std::string target_file = target.substr(0, pos);
                 unsigned int target_line = atoi(target.substr(pos + 1).c_str());
 
-                if (!target_file.compare(filename) && target_line == line)
-                  is_target = true;
+                if (!target_file.compare(filename) && target_line == line){
+                	is_target = true;
+                	if (target.compare(targets.back()))
+                		insert_count=true;
+                }
 
               }
             }
@@ -574,7 +578,7 @@ bool AFLCoverage::runOnModule(Module &M) {
 	/* edited: indicator of reaching a target, each target got a uniq int number */
 	/* Change value at shm[MAPSIZE + (8 or 16)] */
 
-	if (is_target) {
+	if (insert_count) {
 		  
 		Value *MapTargPtr = IRB.CreateBitCast(
 			IRB.CreateGEP(MapPtr, MapTargloc), LargestType->getPointerTo());
