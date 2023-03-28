@@ -1,0 +1,6 @@
+***distance table overflow
+do not use -j4 option when compiling
+
+*** can not calculate distance
+1. check if you run ToWight.py successfully before distance calculation
+2. check if you have CG_edge and if_distance in TMP_DIR
