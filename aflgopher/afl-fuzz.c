@@ -910,29 +910,18 @@ EXP_ST void read_bitmap(u8* fname) {
 
 
 
-//edited:
-void manage_hit(int num){	
+
+void record_hit(){	
   u64 cur_ms = get_cur_time();
   FILE *fp;
   u8* fname = alloc_printf("%s/hit_log", out_dir);
   fp = fopen(fname, "w+");
   fprintf(fp, "************ \n");
   fprintf(fp, "Start time: %lld \n", start_time);
-  fprintf(fp, "End time: %lld \n", cur_ms);
-  fprintf(fp, "Start time: %-34s \n", DTD(cur_ms, start_time));
-  fprintf(fp, "num in queue: %d \n", queued_paths);
-  if (num>0){
-  	fprintf(fp, "minmum path distance: %0.02f", min_distance);
-  	fprintf(fp, "Stopped by target hit.\n");
-  }	
-  else{
-  	fprintf(fp, "Stopped by Timeout.\n");
-  	fprintf(fp, "minmum path distance: %0.02f", min_distance);
-  	
-  }
+  fprintf(fp, "Hit time: %lld \n", cur_ms);
+  fprintf(fp, "Time in format: %-34s \n", DTD(cur_ms, start_time));
+  fprintf(fp, "minmum path distance: %0.02f", min_distance);
   fclose(fp);
-  target_visited++;
-  //PFATAL("Target hit or timeout, check log file at %s.",out_dir);
 }
 
 void read_target_total() {
@@ -987,7 +976,9 @@ static inline u8 has_new_bits(u8* virgin_map) {
   int target_num=(int) (*target_reached);
 
   if (target_num>0){
-  	manage_hit(target_num);
+  	if (target_visited==0)
+  		record_hit();
+  	target_visited++;
   }
 
 
@@ -1002,7 +993,9 @@ static inline u8 has_new_bits(u8* virgin_map) {
   int target_num=(int) (*target_reached);
 
   if (target_num>0){
-  	manage_hit(target_num);
+  	if (target_visited==0)
+  		record_hit();
+  	target_visited++;
   }
   
   
