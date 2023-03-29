@@ -358,9 +358,9 @@ bool AFLCoverage::runOnModule(Module &M) {
 
     /* Create dot-files directory */
     std::string dotfiles(OutDirectory + "/dot-files");
-    if (sys::fs::create_directory(dotfiles)) {
+    /*if (sys::fs::create_directory(dotfiles)) {
       FATAL("Could not create directory %s.", dotfiles.c_str());
-    }
+    }*/
 
     for (auto &F : M) {
 
