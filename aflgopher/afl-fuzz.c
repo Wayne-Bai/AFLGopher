@@ -7967,6 +7967,41 @@ int stricmp(char const *a, char const *b) {
   }
 }
 
+void update_dis_table(){
+  //*** read distance map
+  tmp_dir=getenv("TMP_DIR");
+  if (!tmp_dir){
+  	FATAL("invalid temp directory path");
+  }
+
+  char target_dir[256];
+  strcpy(target_dir,getenv("TMP_DIR"));
+  strcat(target_dir,"/BB_result.txt");
+
+  FILE *fp;
+  fp=fopen( target_dir , "r");
+
+  if ( fp == NULL )
+  	FATAL("Could not open distance table");
+  table_size = 0;
+  char c;
+  for (c = getc(fp); c != EOF; c = getc(fp))
+	if (c == '\n')
+		table_size ++;
+  fclose(fp);
+  // read map
+  OKF("table size is: %d \n", table_size);
+  free(distance_table);
+  distance_table = malloc(table_size * sizeof(float));
+  fp=fopen( target_dir , "r");
+  for (int i = 0; i < table_size; i++)
+    {
+        fscanf(fp, "%f", &distance_table[i]);
+    }
+  fclose(fp);
+
+}
+
 /* Main entry point */
 
 int main(int argc, char** argv) {
@@ -8376,14 +8411,18 @@ int main(int argc, char** argv) {
       //update
       if ((queue_cycle+1)%3==0){
       	   
-      	   OKF("start updating now\n");
+      	   OKF("Start updating now\n");
       	   
       	   pid_t fork_pid = fork();
       	   if (fork_pid==0){
       	   
       	   	system(getenv("UPDATE_SH"));
+      	   	update_dis_table()
+      	   	OKF("Update finished.\n");
       	   	exit(0);
+      	   }else{
       	   
+      	   	OKF("Update fail. Please check the .sh file.\n");
       	   }
       	   
       }
