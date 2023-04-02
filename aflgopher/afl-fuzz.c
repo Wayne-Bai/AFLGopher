@@ -8014,9 +8014,8 @@ void sigchld_handler(int sig) {
     while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
         if (WIFEXITED(status)) {
             need_update=true;
-            OKF("Distance map updated.\n");
         } else if (WIFSIGNALED(status)) {
-            OKF("Distance map update fail!\n");
+            OKF("Update fail. Please check the .sh file\n");
         }
     }
 }
@@ -8439,11 +8438,7 @@ int main(int argc, char** argv) {
       	   	system(getenv("UPDATE_SH"));
       	   	OKF("Update finished.\n");
       	   	exit(0);
-      	   }else{
-      	   
-      	   	OKF("Update fail. Please check the .sh file.\n");
       	   }
-      	   
       }
       
       if (need_update){
