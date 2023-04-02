@@ -45,6 +45,7 @@
 #include <termios.h>
 #include <dlfcn.h>
 #include <sched.h>
+#include <stdbool.h>
 
 #include <sys/wait.h>
 #include <sys/time.h>
@@ -55,6 +56,9 @@
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 #include <sys/file.h>
+#include <signal.h>
+#include <sys/wait.h>
+
 
 #include <math.h>
 
@@ -298,6 +302,7 @@ static int *target_heap_ptr;
 static float *distance_table;
 static int table_size=0;
 static char profiler_path[256];
+static bool need_update=false;
 
 //static int last_epoch_id=0;
 //static int epoch = 100;
@@ -8002,6 +8007,21 @@ void update_dis_table(){
 
 }
 
+void sigchld_handler(int sig) {
+    int status;
+    pid_t pid;
+
+    while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
+        if (WIFEXITED(status)) {
+            need_update=true;
+            OKF("Distance map updated.\n");
+        } else if (WIFSIGNALED(status)) {
+            OKF("Distance map update fail!\n");
+        }
+    }
+}
+
+
 /* Main entry point */
 
 int main(int argc, char** argv) {
@@ -8412,12 +8432,11 @@ int main(int argc, char** argv) {
       if ((queue_cycle+1)%3==0){
       	   
       	   OKF("Start updating now\n");
-      	   
+      	   signal(SIGCHLD, sigchld_handler);
       	   pid_t fork_pid = fork();
       	   if (fork_pid==0){
       	   
       	   	system(getenv("UPDATE_SH"));
-      	   	update_dis_table()
       	   	OKF("Update finished.\n");
       	   	exit(0);
       	   }else{
@@ -8425,6 +8444,11 @@ int main(int argc, char** argv) {
       	   	OKF("Update fail. Please check the .sh file.\n");
       	   }
       	   
+      }
+      
+      if (need_update){
+      	update_dis_table();
+      	need_update=false;
       }
 
       queue_cycle++;
