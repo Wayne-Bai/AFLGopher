@@ -20,8 +20,8 @@ replacing the analysis.
 
 ## Results (extended evaluation, arXiv 2511.10828)
 
-Against five state-of-the-art directed fuzzers (AFLGo, BEACON, WindRanger,
-SelectFuzz, AFLGo-Fuzz), AFLGopher reaches target sites 2.5–3.8× faster and triggers
+Against four state-of-the-art directed fuzzers (AFLGo, BEACON, WindRanger,
+SelectFuzz, AFLGo-Fuzz) and an enhanced version of AFLGo, AFLGopher reaches target sites 2.5–3.8× faster and triggers
 known vulnerabilities 4.5–5.6× faster.
 
 ## Layout
